@@ -1,0 +1,114 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+import { cv } from '../lib/cv';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Oculta header y footer al imprimir (la usa /cv). */
+  printBare?: boolean;
+}
+
+const { title, description, printBare = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const chrome = printBare ? 'hide' : undefined;
+---
+
+{/*
+  data-theme="dark" va servido desde el HTML: el default del sitio es oscuro,
+  así que la mayoría de las visitas no ejecutan ningún cambio de tema y no hay
+  flash. El script de abajo solo interviene si hay una preferencia guardada.
+*/}
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {/*
+      BLOQUEANTE Y A PROPÓSITO: corre antes del primer paint para que no haya
+      flash oscuro→claro en quien eligió claro. is:inline lo deja tal cual en
+      el HTML — sin bundle, sin request extra. No moverlo abajo ni ponerle
+      defer: perdería todo el sentido.
+    */}
+    <script is:inline>
+      try {
+        if (localStorage.getItem('theme') === 'light') {
+          document.documentElement.dataset.theme = 'light';
+        }
+      } catch {
+        /* localStorage bloqueado (modo estricto de privacidad): queda el dark
+           por defecto, que es exactamente lo que queremos. */
+      }
+    </script>
+  </head>
+
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#main"
+      data-print="hide"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50
+             focus:rounded focus:bg-[var(--color-surface)] focus:px-4 focus:py-2"
+    >
+      Skip to content
+    </a>
+
+    <div class="mx-auto w-full max-w-3xl flex-1 px-5 py-6 sm:px-6 sm:py-8">
+      {/* Barra superior encajonada, como el header de una TUI. */}
+      <header data-print={chrome}>
+        <nav aria-label="Main" class="tui-box flex items-center justify-between gap-4">
+          <a href="/" class="text-[var(--color-fg)] no-underline hover:text-[var(--color-accent)]">
+            ~/y3rb1t4
+          </a>
+
+          <div class="flex items-center gap-4">
+            <a href="/cv" class="text-[var(--color-muted)] no-underline hover:text-[var(--color-accent)]">
+              cv
+            </a>
+
+            {/* Las redes salen del CV: agregar una es tocar el JSON, nada más. */}
+            {
+              cv.basics.profiles.map((p) => (
+                <a
+                  href={p.url}
+                  rel="me noopener"
+                  aria-label={`${p.network} — ${p.username}`}
+                  class="text-[var(--color-muted)] no-underline transition-colors hover:text-[var(--color-accent)]"
+                >
+                  <SocialIcon network={p.network} class="size-4" />
+                </a>
+              ))
+            }
+
+            <ThemeToggle />
+          </div>
+        </nav>
+      </header>
+
+      <main id="main" class="py-10">
+        <slot />
+      </main>
+
+      <footer data-print={chrome}>
+        <div class="rule mb-3"></div>
+        <p class="text-xs text-[var(--color-muted)]">
+          built with astro · no trackers, no cookies, no analytics
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

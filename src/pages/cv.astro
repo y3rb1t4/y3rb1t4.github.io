@@ -1,0 +1,211 @@
+---
+import Base from '../layouts/Base.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+import { cv, fmtRange } from '../lib/cv';
+
+// ESTA PÁGINA ES EL ORIGEN DEL PDF.
+// scripts/build-pdf.mjs la imprime con `media: print`. No hardcodear datos
+// del CV acá: todo sale de src/content/cv/y3rb1t4.json.
+//
+// Ojo con la estética: en pantalla esto es una terminal, pero el @media print
+// de global.css la apaga entera (bordes, corchetes, hex, caret) y pasa la
+// prosa a sans. El PDF es el archivo que ve un ATS o alguien de RRHH.
+const { basics, work, skills, certificates, education, languages } = cv;
+
+const hex = (n: number) => `0x${n.toString(16)}`;
+let n = 0;
+---
+
+<Base
+  title={`${basics.name} — ${basics.label}`}
+  description={basics.summary}
+  printBare
+>
+  <article>
+    {/* --- cabecera ------------------------------------------------------ */}
+    <header class="cv-section">
+      <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+        <h1 class="text-xl font-bold tracking-tight">{basics.name}</h1>
+        <a href="/cv.pdf" download data-print="hide" class="text-xs">
+          download pdf ↓
+        </a>
+      </div>
+
+      <dl class="kv mt-4">
+        <dt>role</dt>
+        <dd>{basics.label}</dd>
+
+        <dt>location</dt>
+        <dd>{basics.location.city}, {basics.location.countryCode}</dd>
+
+        {
+          basics.profiles.map((p) => (
+            <>
+              <dt>{p.network.toLowerCase()}</dt>
+              <dd>
+                {/* Ícono + URL en pantalla. En el PDF los corchetes de la
+                    etiqueta desaparecen y data-print-url agrega el href,
+                    porque en papel un link sin URL no sirve. */}
+                <a
+                  href={p.url}
+                  rel="noopener"
+                  data-print-url
+                  class="inline-flex items-center gap-2"
+                >
+                  <SocialIcon network={p.network} class="size-[13px] shrink-0" />
+                  <span class="print:hidden">
+                    {p.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                  </span>
+                  <span class="hidden print:inline">{p.network}</span>
+                </a>
+              </dd>
+            </>
+          ))
+        }
+      </dl>
+
+      <p class="mt-5 max-w-prose leading-relaxed">{basics.summary}</p>
+    </header>
+
+    {
+      work.length > 0 && (
+        <section class="cv-section mt-9">
+          <div class="rule mb-4" />
+          <h2 class="section-label mb-5">
+            <span class="hex">{hex(n++)}</span> experience
+          </h2>
+
+          {work.map((job) => (
+            <div class="cv-entry mb-6">
+              <div class="flex flex-wrap items-baseline justify-between gap-x-3">
+                <h3 class="font-bold">
+                  {job.position} <span class="text-[var(--color-muted)]">@</span> {job.name}
+                </h3>
+                <span class="text-xs text-[var(--color-muted)] tabular-nums">
+                  {fmtRange(job.startDate, job.endDate)}
+                </span>
+              </div>
+
+              {job.summary && (
+                <p class="mt-1 text-[var(--color-muted)]">{job.summary}</p>
+              )}
+
+              {job.highlights.length > 0 && (
+                <ul class="mt-2 space-y-1 leading-relaxed">
+                  {job.highlights.map((h) => (
+                    <li class="flex gap-2">
+                      <span class="text-[var(--color-accent)]" aria-hidden="true">
+                        ·
+                      </span>
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </section>
+      )
+    }
+
+    {
+      skills.length > 0 && (
+        <section class="cv-section mt-9">
+          <div class="rule mb-4" />
+          <h2 class="section-label mb-4">
+            <span class="hex">{hex(n++)}</span> skills
+          </h2>
+
+          <dl class="kv gap-y-1">
+            {skills.map((s) => (
+              <>
+                <dt class="cv-entry">{s.name.toLowerCase()}</dt>
+                <dd>{s.keywords.join(' · ')}</dd>
+              </>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+
+    {
+      certificates.length > 0 && (
+        <section class="cv-section mt-9">
+          <div class="rule mb-4" />
+          <h2 class="section-label mb-4">
+            <span class="hex">{hex(n++)}</span> certifications
+          </h2>
+
+          <ul class="space-y-1">
+            {certificates.map((c) => (
+              <li class="cv-entry flex flex-wrap justify-between gap-x-3">
+                <span>
+                  {c.url ? (
+                    <a href={c.url} rel="noopener" data-print-url>
+                      {c.name}
+                    </a>
+                  ) : (
+                    c.name
+                  )}
+                  <span class="text-[var(--color-muted)]"> — {c.issuer}</span>
+                </span>
+                {c.date && (
+                  <span class="text-xs text-[var(--color-muted)] tabular-nums">
+                    {c.date}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      education.length > 0 && (
+        <section class="cv-section mt-9">
+          <div class="rule mb-4" />
+          <h2 class="section-label mb-4">
+            <span class="hex">{hex(n++)}</span> education
+          </h2>
+
+          <ul class="space-y-1">
+            {education.map((e) => (
+              <li class="cv-entry flex flex-wrap justify-between gap-x-3">
+                <span>
+                  {e.studyType} in {e.area}
+                  <span class="text-[var(--color-muted)]"> — {e.institution}</span>
+                </span>
+                {(e.startDate || e.endDate) && (
+                  <span class="text-xs text-[var(--color-muted)] tabular-nums">
+                    {fmtRange(e.startDate ?? '', e.endDate)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      languages.length > 0 && (
+        <section class="cv-section mt-9">
+          <div class="rule mb-4" />
+          <h2 class="section-label mb-4">
+            <span class="hex">{hex(n++)}</span> languages
+          </h2>
+
+          <dl class="kv">
+            {languages.map((l) => (
+              <>
+                <dt>{l.language.toLowerCase()}</dt>
+                <dd>{l.fluency}</dd>
+              </>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+  </article>
+</Base>

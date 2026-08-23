@@ -1,0 +1,225 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   TEMA — estética de terminal.
+   Monoespaciada en todo, sin sombras, sin bordes redondeados, alta densidad.
+
+   `@theme` define el tema CLARO y va SIEMPRE a nivel superior. En Tailwind v4
+   un `@theme` anidado dentro de un `@media` no se aplica — no da error, y las
+   variables simplemente nunca cambian. (Fue el bug de la v1 de este archivo:
+   el modo oscuro no andaba y no había nada en la consola.)
+
+   El modo oscuro overridea las mismas custom properties bajo
+   `[data-theme='dark']`, que sí es una regla CSS común.
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Stack de sistema, sin webfont. UbuntuMono Nerd Font la tiene y3rb1t4 en
+     su máquina, no el visitante — pedirla por web serían ~200KB para que se
+     vea igual que la mono del sistema. La velocidad vale más. */
+  --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo,
+    Consolas, 'DejaVu Sans Mono', monospace;
+  --font-sans: var(--font-mono);
+
+  /* Claro: terminal sobre papel */
+  --color-bg: #fbfbf9;
+  --color-fg: #16161a;
+  --color-muted: #6b6b73;
+  --color-border: #d4d4cd;
+  --color-accent: #0a7d55;
+  --color-link: #1d4ed8;
+}
+
+@layer base {
+  :root[data-theme='dark'] {
+    --color-bg: #08080a;
+    --color-fg: #d8d8d2;
+    --color-muted: #7d7d86;
+    --color-border: #2a2a30;
+    --color-accent: #3ddc91;
+    --color-link: #6fa8ff;
+  }
+
+  :root[data-theme='light'] { color-scheme: light; }
+  :root[data-theme='dark'] { color-scheme: dark; }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   PRIMITIVAS DE TERMINAL
+   --------------------------------------------------------------------------- */
+
+/* Marco de caja ASCII, como el `[ welcome :) ]` de una TUI. */
+.tui-box {
+  border: 1px solid var(--color-border);
+  padding: 0.6rem 1rem;
+}
+
+/* Separador punteado de sección. `---------------` sin escribirlo a mano:
+   con border-top el ancho lo resuelve el layout y no se rompe al achicar. */
+.rule {
+  border-top: 1px dashed var(--color-border);
+}
+
+/* Encabezado de sección: `0x1 EXPERIENCE` */
+.section-label {
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
+}
+.section-label .hex {
+  color: var(--color-accent);
+}
+
+/* Fila etiquetada: `[ role ]  Application Security Engineer`
+   Todas las etiquetas comparten una columna, así que quedan alineadas.
+
+   `max-content` y no un ancho fijo en ch: la columna se mide sola por la
+   etiqueta más larga. Con un valor fijo, una etiqueta que no entra parte el
+   corchete de cierre a la línea siguiente — que fue exactamente lo que pasó
+   con `[ location ]` y `[ linkedin ]` contra un `11ch`. Agregar una red nueva
+   no debería obligar a recontar caracteres a mano.
+
+   `nowrap` es el cinturón: aunque la columna se comprima, la etiqueta nunca
+   se parte al medio. */
+.kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0 1.25rem;
+}
+.kv > dt {
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.kv > dt::before { content: '[ '; }
+.kv > dt::after { content: ' ]'; }
+
+@media (max-width: 520px) {
+  .kv {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .kv > dt { margin-top: 0.5rem; }
+}
+
+/* Cursor parpadeante del prompt. Se apaga con reduced-motion. */
+.caret::after {
+  content: '_';
+  color: var(--color-accent);
+  animation: blink 1.1s step-end infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body {
+    transition: background-color 120ms linear, color 120ms linear;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .caret::after { opacity: 1; }
+}
+
+/* ---------------------------------------------------------------------------
+   IMPRESIÓN — define cómo sale dist/cv.pdf.
+
+   DECISIÓN: el PDF NO hereda la estética de terminal. Es el archivo que se
+   adjunta a una postulación y lo puede leer un ATS o alguien de RRHH; una
+   monoespaciada sobre fondo negro ahí juega en contra. En pantalla manda la
+   terminal, en papel manda la legibilidad.
+   --------------------------------------------------------------------------- */
+@media print {
+  /* Los márgenes viven ACÁ, no en build-pdf.mjs: `@page` de la hoja de estilos
+     le gana a la opción `margin` de Playwright. Definirlos en los dos lados
+     hace que gane este en silencio — que fue el bug de la v1, con el texto
+     pegado al borde de la hoja. */
+  @page {
+    size: A4;
+    margin: 16mm 15mm;
+  }
+
+  :root,
+  :root[data-theme='dark'],
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --color-bg: #fff;
+    --color-fg: #111;
+    --color-muted: #555;
+    --color-border: #ccc;
+    --color-accent: #111;
+    --color-link: #111;
+  }
+
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    /* Prosa en sans para el papel; la mono queda solo para metadatos. */
+    font-family: ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.45;
+    transition: none !important;
+  }
+
+  [data-print='hide'] { display: none !important; }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  a { color: #111 !important; text-decoration: none; }
+
+  /* Los links del CV pierden el href al imprimirse: exponerlo al lado.
+     Un CV en papel con "GitHub" sin URL no sirve para nada. */
+  a[data-print-url]::after {
+    content: ' (' attr(href) ')';
+    font-size: 8.5pt;
+    color: #555;
+    word-break: break-all;
+  }
+
+  /* Las primitivas de terminal se apagan: en papel son ruido. */
+  .tui-box { border: none !important; padding: 0 !important; }
+  .caret::after { content: none !important; }
+  .section-label .hex { display: none !important; }
+  .kv > dt::before, .kv > dt::after { content: '' !important; }
+
+  .cv-entry, .cv-section { break-inside: avoid; }
+  h2 { break-after: avoid; }
+}

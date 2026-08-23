@@ -1,0 +1,64 @@
+{
+  "_README": [
+    "FUENTE ÚNICA DE VERDAD del CV. De acá salen la página /cv y dist/cv.pdf.",
+    "Los campos marcados TODO los completa Ch4ng0 — no los inventé a propósito:",
+    "un CV es un registro factual sobre una persona real y no se rellena a ojo.",
+    "SIN PII: nada de teléfono, dirección ni documento. Este archivo entra entero",
+    "al system prompt de un endpoint público y al HTML."
+  ],
+
+  "basics": {
+    "name": "y3rb1t4",
+    "label": "TODO — ej: Application Security Engineer",
+    "url": "https://y3rb1t4.pro",
+    "summary": "TODO — 3 a 5 líneas. Es lo primero que lee un recruiter, y en los 30 segundos que le dedica es casi lo único. Concreto: en qué sos bueno, en qué dominio, con qué evidencia.",
+    "location": {
+      "city": "Buenos Aires",
+      "countryCode": "AR"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "y3rb1t4",
+        "url": "https://github.com/y3rb1t4"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "grodriguezsec",
+        "url": "https://www.linkedin.com/in/grodriguezsec/"
+      }
+    ]
+  },
+
+  "work": [
+    {
+      "name": "TODO — empresa",
+      "position": "TODO — puesto",
+      "startDate": "2024-01",
+      "summary": "TODO — una línea de contexto del rol.",
+      "highlights": [
+        "TODO — logros con impacto medible, no responsabilidades."
+      ]
+    }
+  ],
+
+  "education": [],
+
+  "certificates": [],
+
+  "skills": [
+    {
+      "name": "Application Security",
+      "keywords": ["TODO", "SAST", "DAST", "threat modeling"]
+    },
+    {
+      "name": "Languages",
+      "keywords": ["Rust", "Python", "Bash", "TypeScript"]
+    }
+  ],
+
+  "languages": [
+    { "language": "Spanish", "fluency": "Native" },
+    { "language": "English", "fluency": "Professional working proficiency (B2)" }
+  ]
+}

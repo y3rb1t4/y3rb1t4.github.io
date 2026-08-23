@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "astro-dev",
+      "runtimeExecutable": "zsh",
+      "runtimeArgs": [
+        "-c",
+        "export FNM_DIR=\"$HOME/.local/share/fnm\"; eval \"$(fnm env --shell zsh)\"; fnm use; exec pnpm dev --port 4321"
+      ],
+      "port": 4321
+    }
+  ]
+}

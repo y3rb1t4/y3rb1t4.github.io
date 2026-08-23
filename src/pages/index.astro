@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+import { cv } from '../lib/cv';
+
+const { basics } = cv;
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+// Secciones numeradas en hex, como los offsets de un hexdump.
+const hex = (n: number) => `0x${n.toString(16)}`;
+---
+
+<Base title={`${basics.name} — ${basics.label}`} description={basics.summary}>
+  {/* --- identidad ------------------------------------------------------- */}
+  <section>
+    <h1 class="text-xl font-bold tracking-tight">
+      {basics.name}<span class="caret" aria-hidden="true"></span>
+    </h1>
+
+    <dl class="kv mt-4">
+      <dt>role</dt>
+      <dd>{basics.label}</dd>
+
+      <dt>location</dt>
+      <dd>{basics.location.city}, {basics.location.countryCode}</dd>
+
+      {
+        basics.profiles.map((p) => (
+          <>
+            <dt>{p.network.toLowerCase()}</dt>
+            <dd>
+              <a href={p.url} rel="me noopener" class="inline-flex items-center gap-2">
+                <SocialIcon network={p.network} class="size-[13px] shrink-0" />
+                {p.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+              </a>
+            </dd>
+          </>
+        ))
+      }
+
+      <dt>cv</dt>
+      <dd>
+        <a href="/cv">read</a>
+        <span class="text-[var(--color-muted)]"> · </span>
+        <a href="/cv.pdf" download>download pdf</a>
+      </dd>
+    </dl>
+  </section>
+
+  {/* --- overview -------------------------------------------------------- */}
+  <section class="mt-10">
+    <div class="rule mb-4"></div>
+    <h2 class="section-label mb-4">
+      <span class="hex">{hex(0)}</span> overview
+    </h2>
+    <p class="max-w-prose leading-relaxed">{basics.summary}</p>
+  </section>
+
+  {/* --- proyectos ------------------------------------------------------- */}
+  <section class="mt-10">
+    <div class="rule mb-4"></div>
+    <h2 class="section-label mb-5">
+      <span class="hex">{hex(1)}</span> selected work
+    </h2>
+
+    {
+      projects.length > 0 ? (
+        <ul class="space-y-7">
+          {projects.map((project) => (
+            <li>
+              <div class="flex flex-wrap items-baseline gap-x-3">
+                <h3 class="font-bold text-[var(--color-fg)]">{project.data.title}</h3>
+                {project.data.year && (
+                  <span class="text-xs text-[var(--color-muted)] tabular-nums">
+                    {project.data.year}
+                  </span>
+                )}
+              </div>
+
+              <p class="mt-1 max-w-prose leading-relaxed text-[var(--color-muted)]">
+                {project.data.summary}
+              </p>
+
+              {project.data.stack.length > 0 && (
+                <p class="mt-2 text-xs text-[var(--color-muted)]">
+                  {project.data.stack.map((s) => `[${s}]`).join(' ')}
+                </p>
+              )}
+
+              <p class="mt-2 flex gap-4 text-xs">
+                {project.data.repo && (
+                  <a href={project.data.repo} rel="noopener">source →</a>
+                )}
+                {project.data.demo && <a href={project.data.demo} rel="noopener">live →</a>}
+              </p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="text-[var(--color-muted)]">
+          {/* Placeholder de desarrollo: desaparece solo al agregar el primer .mdx */}
+          No projects yet — add one under <code>src/content/projects/</code>.
+        </p>
+      )
+    }
+  </section>
+</Base>

@@ -1,0 +1,26 @@
+---
+title: colmena
+summary: Deterministic governance for multi-agent Claude Code — a trust firewall and approval hub that evaluates every tool call against YAML policy in under 15ms, with no LLM in the hot path.
+order: 1
+featured: true
+year: 2026
+stack: ['Rust', 'MCP', 'YAML']
+repo: https://github.com/y3rb1t4/colmena
+---
+
+Agent frameworks tend to treat permissions as an afterthought: either the agent
+can do everything, or a human approves every call. colmena sits in between.
+
+Three ideas hold it together:
+
+- **Scoped autonomy** — policy is YAML per role and per agent, compiled to
+  regex and evaluated deterministically. No model decides what a model is
+  allowed to do.
+- **Mandatory review** — workers submit through a review gate; a central
+  auditor scores the work, and a hook blocks the agent until the loop closes.
+- **Earned trust** — an append-only ELO ledger per role, with time decay. Human
+  overrides always win over the score.
+
+The whole thing is filesystem-based: YAML for policy, JSONL for the audit
+trail. No network calls and no database in the hot path, which is what keeps
+the evaluation under 15ms and the audit trail honest.

@@ -1,0 +1,54 @@
+---
+/**
+ * Toggle dark/light, en estética de terminal: `[ dark ]` / `[ light ]`.
+ *
+ * El default del sitio es DARK y se sirve así desde el HTML (ver Base.astro).
+ * Este botón solo persiste una preferencia explícita en localStorage.
+ *
+ * Las dos etiquetas están siempre en el DOM y se muestra una u otra por CSS
+ * según data-theme. Alternativa descartada: escribir el texto por JS — el
+ * botón parpadea con la etiqueta equivocada en el primer paint.
+ */
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  data-print="hide"
+  aria-label="Switch to light theme"
+  class="border border-[var(--color-border)] px-2 py-0.5 text-xs
+         text-[var(--color-muted)] transition-colors
+         hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+>
+  <span class="theme-label-dark">dark</span>
+  <span class="theme-label-light">light</span>
+</button>
+
+<style is:global>
+  :root[data-theme='dark'] .theme-label-light,
+  :root[data-theme='light'] .theme-label-dark {
+    display: none;
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+
+  const label = (theme: string) =>
+    `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`;
+
+  btn?.setAttribute('aria-label', label(root.dataset.theme ?? 'dark'));
+
+  btn?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    btn.setAttribute('aria-label', label(next));
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* Sin persistencia si localStorage está bloqueado. El toggle sigue
+         funcionando en la sesión actual, que es lo que importa. */
+    }
+  });
+</script>

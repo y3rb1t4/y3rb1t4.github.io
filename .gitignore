@@ -1,0 +1,19 @@
+# build — cv.pdf se genera acá adentro, no se commitea
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# playwright
+test-results/
+
+# env
+.env
+.env.*
+
+# editor / os
+.DS_Store
+*.log
+.vscode/
+.idea/
