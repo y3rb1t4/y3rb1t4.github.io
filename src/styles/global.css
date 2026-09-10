@@ -220,6 +220,13 @@
   .section-label .hex { display: none !important; }
   .kv > dt::before, .kv > dt::after { content: '' !important; }
 
-  .cv-entry, .cv-section { break-inside: avoid; }
+  /* `break-inside: avoid` va SOLO en la entrada individual: un puesto no se
+     parte al medio entre páginas, pero una SECCIÓN sí puede fluir.
+     Ponerlo en .cv-section empuja el bloque entero a la página siguiente
+     cuando no entra completo, y deja media hoja en blanco — que fue el bug
+     de la v1 con 10 puestos cargados. */
+  .cv-entry { break-inside: avoid; }
+
+  /* Un encabezado nunca queda solo al pie de página. */
   h2 { break-after: avoid; }
 }

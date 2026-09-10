@@ -1,17 +1,18 @@
 {
   "_README": [
     "FUENTE ÚNICA DE VERDAD del CV. De acá salen la página /cv y dist/cv.pdf.",
-    "Los campos marcados TODO los completa Ch4ng0 — no los inventé a propósito:",
-    "un CV es un registro factual sobre una persona real y no se rellena a ojo.",
-    "SIN PII: nada de teléfono, dirección ni documento. Este archivo entra entero",
-    "al system prompt de un endpoint público y al HTML."
+    "Cargado desde el export PDF del perfil de LinkedIn el 2026-09-10.",
+    "SIN PII: nada de teléfono, dirección ni documento. Este archivo se publica",
+    "entero en el HTML y en el PDF. El teléfono y el email que trae el export de",
+    "LinkedIn quedaron AFUERA a propósito — si querés email público, agregalo",
+    "en basics.email y aparece solo."
   ],
 
   "basics": {
-    "name": "y3rb1t4",
-    "label": "TODO — ej: Application Security Engineer",
+    "name": "Gabo Rodriguez",
+    "label": "Senior Application Security Engineer",
     "url": "https://y3rb1t4.pro",
-    "summary": "TODO — 3 a 5 líneas. Es lo primero que lee un recruiter, y en los 30 segundos que le dedica es casi lo único. Concreto: en qué sos bueno, en qué dominio, con qué evidencia.",
+    "summary": "Cybersecurity specialist focused on application security, cloud IAM and DevSecOps. I implement and operate identity and access controls across AWS and Azure — roles, policies, service accounts and short-lived credentials via STS — to cut reliance on static secrets and make access auditable. I integrate IAM, secrets management and security tooling into CI/CD pipelines and infrastructure as code, so validation and enforcement run automatically instead of by hand.",
     "location": {
       "city": "Buenos Aires",
       "countryCode": "AR"
@@ -32,24 +33,136 @@
 
   "work": [
     {
-      "name": "TODO — empresa",
-      "position": "TODO — puesto",
-      "startDate": "2024-01",
-      "summary": "TODO — una línea de contexto del rol.",
+      "name": "Cashea",
+      "position": "Senior Application Security Engineer",
+      "startDate": "2026-02",
+      "highlights": []
+    },
+    {
+      "name": "Baufest",
+      "position": "AppSec Research Engineer",
+      "startDate": "2025-05",
+      "endDate": "2026-02",
       "highlights": [
-        "TODO — logros con impacto medible, no responsabilidades."
+        "Drove application security initiatives across multiple product teams.",
+        "Ran security assessments covering SAST, DAST, and mobile and cloud evaluations.",
+        "Designed secure SDLC practices, integrating security tooling into CI/CD pipelines."
       ]
+    },
+    {
+      "name": "ITTI Digital",
+      "position": "Senior Application Security Analyst",
+      "startDate": "2023-10",
+      "endDate": "2025-04",
+      "highlights": []
+    },
+    {
+      "name": "Hack The Box",
+      "position": "HTB Ambassador, Argentina",
+      "startDate": "2024-02",
+      "endDate": "2025-04",
+      "summary": "Community role: ran and supported the Argentine Hack The Box community.",
+      "highlights": []
+    },
+    {
+      "name": "IBM",
+      "position": "Security Consultant — Application Security",
+      "startDate": "2022-06",
+      "endDate": "2023-12",
+      "summary": "Cloud security advocate at the Cybersecurity CoE, on the Banco Supervielle account.",
+      "highlights": []
+    },
+    {
+      "name": "Just Mobile Security",
+      "position": "Pentester",
+      "startDate": "2022-05",
+      "endDate": "2023-10",
+      "highlights": []
+    },
+    {
+      "name": "Xelere",
+      "position": "Red Team",
+      "startDate": "2022-03",
+      "endDate": "2022-06",
+      "highlights": []
+    },
+    {
+      "name": "Charles Taylor",
+      "position": "ETL Developer",
+      "startDate": "2021-08",
+      "endDate": "2022-06",
+      "highlights": []
+    },
+    {
+      "name": "Argentina Programa",
+      "position": "Virtual Learning Tutor",
+      "startDate": "2021-09",
+      "endDate": "2023-01",
+      "highlights": []
+    },
+    {
+      "name": "Electrical engineering",
+      "position": "Design engineer and site supervisor",
+      "startDate": "2010-06",
+      "endDate": "2021-09",
+      "summary": "Eleven years in electrical and thermomechanical engineering before moving into security — UTN Buenos Aires (scholarship holder and electrical designer), Galileo Technologies, Planeta Frío and Brignone. Design, budgeting and on-site supervision.",
+      "highlights": []
     }
   ],
 
-  "education": [],
+  "education": [
+    {
+      "institution": "Universidad Tecnológica Nacional",
+      "area": "Electrical Engineering",
+      "studyType": "Engineering degree",
+      "startDate": "2011-01",
+      "endDate": "2020-07"
+    }
+  ],
 
-  "certificates": [],
+  "certificates": [
+    { "name": "GitLab DevSecOps Sales Specialty", "issuer": "GitLab" },
+    { "name": "DevSecOps Essentials" },
+    { "name": "Blockchain Essentials" }
+  ],
 
   "skills": [
     {
       "name": "Application Security",
-      "keywords": ["TODO", "SAST", "DAST", "threat modeling"]
+      "keywords": [
+        "Threat modeling",
+        "SAST",
+        "DAST",
+        "Secure SDLC",
+        "Web application security",
+        "Mobile security",
+        "Code review"
+      ]
+    },
+    {
+      "name": "Cloud & IAM",
+      "keywords": [
+        "AWS IAM",
+        "Azure",
+        "STS / short-lived credentials",
+        "Least privilege",
+        "Secrets management",
+        "Infrastructure as Code",
+        "IAM maturity models"
+      ]
+    },
+    {
+      "name": "DevSecOps",
+      "keywords": [
+        "CI/CD pipeline security",
+        "Automated security gates",
+        "GitLab",
+        "Policy as code"
+      ]
+    },
+    {
+      "name": "Offensive Security",
+      "keywords": ["Penetration testing", "Red team", "Mobile pentesting"]
     },
     {
       "name": "Languages",
@@ -59,6 +172,7 @@
 
   "languages": [
     { "language": "Spanish", "fluency": "Native" },
-    { "language": "English", "fluency": "Professional working proficiency (B2)" }
+    { "language": "English", "fluency": "Professional working proficiency (B2)" },
+    { "language": "German", "fluency": "Elementary" }
   ]
 }

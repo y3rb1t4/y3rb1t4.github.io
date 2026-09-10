@@ -147,7 +147,7 @@ let n = 0;
                   ) : (
                     c.name
                   )}
-                  <span class="text-[var(--color-muted)]"> — {c.issuer}</span>
+                  {c.issuer && <span class="text-[var(--color-muted)]"> — {c.issuer}</span>}
                 </span>
                 {c.date && (
                   <span class="text-xs text-[var(--color-muted)] tabular-nums">

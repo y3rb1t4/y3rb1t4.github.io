@@ -71,7 +71,10 @@ const cvSchema = z.object({
     .array(
       z.object({
         name: z.string(),
-        issuer: z.string(),
+        // Opcional a propósito: el export de LinkedIn no trae el emisor, y es
+        // preferible listar la certificación sin atribuir que inventar quién
+        // la emitió.
+        issuer: z.string().optional(),
         date: dateish.optional(),
         url: z.string().url().optional(),
       }),
@@ -100,6 +103,10 @@ export type CV = z.infer<typeof cvSchema>;
  */
 export const cv: CV = cvSchema.parse(raw);
 
-/** "2024-01 — presente" */
+/**
+ * "2024-01 — present"
+ * En inglés: el contenido del sitio es inglés (ver CLAUDE.md), solo los
+ * comentarios y las explicaciones van en español.
+ */
 export const fmtRange = (start: string, end?: string) =>
-  `${start} — ${end ?? 'presente'}`;
+  `${start} — ${end ?? 'present'}`;
